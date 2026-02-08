@@ -28,6 +28,15 @@
   {{ 'quick-order-list.css' | asset_url | stylesheet_tag }}
   {{ 'quantity-popover.css' | asset_url | stylesheet_tag }}
 {%- endunless -%}
+
+{% style %}
+  .best-seller,
+  .discount-badge,
+  .card__information a {
+    font-family: var(--font-subheading-family);
+    z-index: 3;
+  }
+{% endstyle %}
 {%- if card_product and card_product != empty -%}
   {%- liquid
     assign ratio = 1
@@ -40,7 +49,10 @@
       assign ratio = 1
     endif
   -%}
-  <div class="card-wrapper product-card-wrapper underline-links-hover">
+
+  {% assign product_details_badges = card_product.metafields.custom.product_details.value %}
+  <script>console.log("metafield==>", {{ product_details_badges | json}})</script>
+  <div class="card-wrapper product-card-wrapper">
     <div
       class="
         card card--{{ settings.card_style }}
@@ -57,6 +69,36 @@
         class="card__inner {% if settings.card_style == 'standard' %}color-{{ settings.card_color_scheme }} gradient{% endif %}{% if card_product.featured_media or settings.card_style == 'standard' %} ratio{% endif %}"
         style="--ratio-percent: {{ 1 | divided_by: ratio | times: 100 }}%;"
       >
+      {% for product_badge in product_details_badges %}
+        {% if product_badge.best_seller %}
+          <span class="best-seller tw-absolute tw-z-3
+            tw-top-[4px] tw-left-[4px]
+            md:tw-top-[8px] md:tw-left-[8px]
+            tw-rounded-[50px]
+            tw-border tw-border-current
+            md:tw-text-[10px] tw-text-[8px]
+            tw-tracking-[0.06px] tw-tracking-[0.2px]
+            tw-leading-[100%]
+            tw-py-[4px] tw-px-[8px]
+            tw-uppercase
+            tw-bg-[#ffffff]"
+          >{{ product_badge.best_seller }}</span>
+        {% endif %}
+        {% if product_badge.discount != blank %}
+          <span class="discount-badge
+            tw-absolute md:tw-top-[8px] md:tw-right-[27px] tw-z-3
+            tw-text-[8px] md:tw-text-[10px]
+            tw-leading-[100%] tw-tracking-[0.06px]
+            tw-font-normal
+            tw-border tw-border-[#000000]
+            tw-py-[4px] tw-px-[8px]
+            tw-text-[#ffffff]
+            tw-bg-[#5C7962]
+            tw-rounded-[50px]
+            tw-top-[4px] tw-right-[4px]
+          ">{{ product_badge.discount }}</span>
+        {% endif %}
+      {% endfor %}
         {%- if card_product.featured_media -%}
           <div class="card__media{% if image_shape and image_shape != 'default' %} shape--{{ image_shape }} color-{{ settings.card_color_scheme }} gradient{% endif %}">
             <div class="media media--transparent media--hover-effect">
@@ -144,7 +186,7 @@
         </div>
       </div>
       <div class="card__content">
-        <div class="card__information">
+        <div class="card__information tw-flex tw-flex-col tw-gap-[8px] tw-px-8px md:tw-px-[12px]">
           <h3
             class="card__heading{% if card_product.featured_media or settings.card_style == 'standard' %} h5{% endif %}"
             {% if card_product.featured_media or settings.card_style == 'card' %}
@@ -154,12 +196,33 @@
             <a
               href="{{ card_product.url }}"
               id="CardLink-{{ section_id }}-{{ card_product.id }}"
-              class="full-unstyled-link"
+              class="full-unstyled-link
+              md:tw-text-[18px] tw-text-[16px]
+              tw-leading-[100%]
+              md:tw-tracking-[0.6px] tw-tracking-[0.48px]
+              tw-uppercase
+              tw-font-normal"
               aria-labelledby="CardLink-{{ section_id }}-{{ card_product.id }} Badge-{{ section_id }}-{{ card_product.id }}"
             >
               {{ card_product.title | escape }}
             </a>
           </h3>
+          {% for product_badge in product_details_badges %}
+            <div class="reivew-icon-with-content tw-flex tw-items-center tw-gap-[4px]">
+              {% if product_badge.review_icons != blank %}
+                <img class="review tw-w-[53px] tw-h-[9px] md:tw-w-[66px] md:tw-h-[12px]" src="{{ product_badge.review_icons |  image_url: width: auto }}" />
+              {% endif %}
+              {% if product_badge.review_content != blank %}
+                <span class="review-content
+                md:tw-text-[12px] tw-text-[11px]
+                tw-leading-[100%]
+                tw-tracking-[0px]
+                tw-text-[#707070]
+                tw-font-normal"
+                >{{ product_badge.review_content }}</span>
+              {% endif %}
+            </div>
+          {% endfor %}
           <div class="card-information">
             {%- if show_vendor -%}
               <span class="visually-hidden">{{ 'accessibility.vendor' | t }}</span>
@@ -576,7 +639,7 @@
       assign ratio = 0.8
     endif
   -%}
-  <div class="card-wrapper product-card-wrapper underline-links-hover">
+  <div class="card-wrapper product-card-wrapper">
     <div
       class="
         card card--{{ settings.card_style }}
@@ -604,9 +667,9 @@
         </div>
       </div>
       <div class="card__content">
-        <div class="card__information">
+        <div class="card__information tw-flex tw-flex-col tw-gap-[8px]">
           <h3 class="card__heading card__heading--placeholder{% if settings.card_style == 'standard' %} h5{% endif %}">
-            <a role="link" aria-disabled="true" class="full-unstyled-link">
+            <a role="link" aria-disabled="true" class="full-unstyled-link hover:tw-no-underline">
               {{ 'onboarding.product_title' | t }}
             </a>
           </h3>

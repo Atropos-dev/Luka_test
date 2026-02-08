@@ -194,6 +194,9 @@
         "header__1": {
           "content": "Headings"
         },
+        "subheading": {
+          "content": "subHeading"
+        },
         "header__2": {
           "content": "Body"
         },
@@ -366,9 +369,15 @@
         "spacing_grid_horizontal": {
           "label": "Horizontal space"
         },
+        "spacing_grid_horizontal_mobile": {
+          "label": "Horizontal Mobile space"
+        },
         "spacing_grid_vertical": {
           "label": "Vertical space"
-        }
+        },
+        "spacing_grid_vertical_mobile": {
+          "label": "Vertical space"
+        },
       }
     }
   },

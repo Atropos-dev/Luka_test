@@ -24,7 +24,15 @@
 }
 
 .price__regular .price-item--regular {
-  margin-right: 0;
+  margin-right: 0;  
+  line-height: 100%;
+  letter-spacing: 0;
+  text-transform: uppercase;
+  font-weight: 500;
+
+  @media (max-width: 425px) {
+    font-size: 16px;
+  }
 }
 
 .price:not(.price--show-badge) .price-item--last:last-of-type {
